@@ -38,6 +38,7 @@ public class UserService {
             throw new ConflictException("Email already in use");
 
         User saved = userRepository.save(UserMapper.toEntity(req));
+        deviceClient.notifyUserCreated(saved.getId());
         return UserMapper.toResponse(saved);
     }
 
@@ -56,7 +57,7 @@ public class UserService {
     @Transactional
     public void delete(UUID id) {
         User user = getOrThrow(id);
-        deviceClient.removeAssignmentsOfUser(id);
+        deviceClient.notifyUserDeleted(id);
         userRepository.delete(user);
     }
 

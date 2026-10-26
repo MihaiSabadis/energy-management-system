@@ -1,12 +1,13 @@
 package com.mihai.device_service.service;
 
-import com.mihai.device_service.client.UserClient;
 import com.mihai.device_service.dto.DeviceRequest;
 import com.mihai.device_service.dto.DeviceResponse;
 import com.mihai.device_service.entity.Device;
+import com.mihai.device_service.entity.UserRef;
 import com.mihai.device_service.exception.NotFoundException;
 import com.mihai.device_service.mapper.DeviceMapper;
 import com.mihai.device_service.repository.DeviceRepository;
+import com.mihai.device_service.repository.UserRefRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class DeviceService {
 
     private final DeviceRepository deviceRepository;
-    private final UserClient userClient;
+    private final UserRefRepository userRefRepository;
 
     public List<DeviceResponse> findAll() {
         return deviceRepository.findAll().stream().map(DeviceMapper::toResponse).toList();
@@ -53,22 +54,30 @@ public class DeviceService {
     @Transactional
     public DeviceResponse assign(UUID deviceId, UUID userId) {
         Device device = getOrThrow(deviceId);
-        if (!userClient.userExists(userId))
-            throw new NotFoundException("User " + userId + " not found");
-        device.setUserId(userId);
+        UserRef user = userRefRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
+        device.setUser(user);
         return DeviceMapper.toResponse(device);
     }
 
     @Transactional
     public DeviceResponse unassign(UUID deviceId) {
         Device device = getOrThrow(deviceId);
-        device.setUserId(null);
+        device.setUser(null);
         return DeviceMapper.toResponse(device);
     }
 
     @Transactional
-    public void removeAssignmentsOfUser(UUID userId) {
-        deviceRepository.findByUserId(userId).forEach(d -> d.setUserId(null));
+    public void syncUserCreated(UUID userId) {
+        if (!userRefRepository.existsById(userId)) {
+            userRefRepository.save(new UserRef(userId));
+        }
+    }
+
+    @Transactional
+    public void syncUserDeleted(UUID userId) {
+        deviceRepository.findByUserId(userId).forEach(d -> d.setUser(null));
+        userRefRepository.deleteById(userId);
     }
 
     private Device getOrThrow(UUID id) {

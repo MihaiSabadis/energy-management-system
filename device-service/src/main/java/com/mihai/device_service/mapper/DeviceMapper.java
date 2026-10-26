@@ -10,7 +10,8 @@ public final class DeviceMapper {
 
     public static DeviceResponse toResponse(Device d) {
         return new DeviceResponse(d.getId(), d.getName(), d.getDescription(),
-                d.getAddress(), d.getMaxConsumption(), d.getUserId());
+                d.getAddress(), d.getMaxConsumption(),
+                d.getUser() != null ? d.getUser().getId() : null);
     }
 
     public static Device toEntity(DeviceRequest req) {

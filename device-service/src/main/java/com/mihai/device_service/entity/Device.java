@@ -27,5 +27,7 @@ public class Device {
     @Column(nullable = false)
     private Double maxConsumption;   // kWh
 
-    private UUID userId;              // null = unassigned
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserRef user;   // null = unassigned
 }
