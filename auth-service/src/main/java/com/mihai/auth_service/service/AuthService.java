@@ -5,6 +5,10 @@ import com.mihai.auth_service.client.UserClient;
 import com.mihai.auth_service.dto.*;
 import com.mihai.auth_service.entity.*;
 import com.mihai.auth_service.exception.*;
+import com.mihai.auth_service.security.AccessPolicy;
+import com.mihai.auth_service.security.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,17 +23,21 @@ public class AuthService {
     private final CredentialRepository credentialRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserClient userClient;
+    private final JwtUtil jwtUtil;
+    private final AccessPolicy accessPolicy;
 
     @Transactional
     public LoginResponse register(RegisterRequest req) {
-        return createAccount(req.username(), req.password(), req.fullName(),
+        Credential cred = createAccount(req.username(), req.password(), req.fullName(),
                 req.email(), req.address(), Role.CLIENT);
+        return toLoginResponse(cred);            // registering also logs you in
     }
 
     @Transactional
-    public LoginResponse createUser(CreateUserRequest req) {
-        return createAccount(req.username(), req.password(), req.fullName(),
+    public AccountResponse createUser(CreateUserRequest req) {
+        Credential cred = createAccount(req.username(), req.password(), req.fullName(),
                 req.email(), req.address(), req.role());
+        return new AccountResponse(cred.getId(), cred.getUsername(), cred.getRole());
     }
 
     public LoginResponse login(LoginRequest req) {
@@ -37,11 +45,32 @@ public class AuthService {
                 .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
         if (!passwordEncoder.matches(req.password(), cred.getPasswordHash()))
             throw new UnauthorizedException("Invalid username or password");
-        return new LoginResponse(cred.getId(), cred.getUsername(), cred.getRole());
+        return toLoginResponse(cred);
     }
 
-    private LoginResponse createAccount(String username, String password, String fullName,
-                                        String email, String address, Role role) {
+    public ValidateResponse validate(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            throw new UnauthorizedException("Missing or malformed Authorization header");
+
+        String token = authHeader.substring("Bearer ".length());
+        try {
+            io.jsonwebtoken.Claims claims = jwtUtil.parse(token);
+            return new ValidateResponse(
+                    UUID.fromString(claims.getSubject()),
+                    claims.get("username", String.class),
+                    Role.valueOf(claims.get("role", String.class)));
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new UnauthorizedException("Invalid or expired token");
+        }
+    }
+
+    private LoginResponse toLoginResponse(Credential cred) {
+        return new LoginResponse(jwtUtil.generateToken(cred),
+                cred.getId(), cred.getUsername(), cred.getRole());
+    }
+
+    private Credential createAccount(String username, String password, String fullName,
+                                     String email, String address, Role role) {
         if (credentialRepository.existsByUsername(username))
             throw new ConflictException("Username already taken");
 
@@ -53,7 +82,35 @@ public class AuthService {
                 .passwordHash(passwordEncoder.encode(password))
                 .role(role)
                 .build();
-        credentialRepository.save(cred);
-        return new LoginResponse(id, username, role);
+        return credentialRepository.save(cred);
+    }
+
+    public ValidateResponse validate(String authHeader, String method, String uri) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            throw new UnauthorizedException("Missing or malformed Authorization header");
+
+        ValidateResponse identity;
+        try {
+            Claims claims = jwtUtil.parse(authHeader.substring("Bearer ".length()));
+            identity = new ValidateResponse(
+                    UUID.fromString(claims.getSubject()),
+                    claims.get("username", String.class),
+                    Role.valueOf(claims.get("role", String.class)));
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new UnauthorizedException("Invalid or expired token");
+        }
+
+        // called directly (e.g. from Swagger): only check the token
+        if (method == null && uri == null) return identity;
+
+        if (!accessPolicy.isAllowed(identity.role(), identity.userId(), method, uri))
+            throw new ForbiddenException("Not allowed: " + method + " " + uri);
+
+        return identity;
+    }
+
+    @Transactional
+    public void deleteCredentials(UUID userId) {
+        credentialRepository.deleteById(userId);
     }
 }

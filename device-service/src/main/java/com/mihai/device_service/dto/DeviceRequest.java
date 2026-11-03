@@ -7,6 +7,5 @@ import jakarta.validation.constraints.Positive;
 public record DeviceRequest(
         @NotBlank String name,
         String description,
-        String address,
         @NotNull @Positive Double maxConsumption
 ) {}

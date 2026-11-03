@@ -22,8 +22,6 @@ public class Device {
 
     private String description;
 
-    private String address;
-
     @Column(nullable = false)
     private Double maxConsumption;   // kWh
 

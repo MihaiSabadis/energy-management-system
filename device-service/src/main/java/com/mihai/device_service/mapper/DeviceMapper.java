@@ -10,7 +10,7 @@ public final class DeviceMapper {
 
     public static DeviceResponse toResponse(Device d) {
         return new DeviceResponse(d.getId(), d.getName(), d.getDescription(),
-                d.getAddress(), d.getMaxConsumption(),
+                d.getMaxConsumption(),
                 d.getUser() != null ? d.getUser().getId() : null);
     }
 
@@ -18,7 +18,6 @@ public final class DeviceMapper {
         return Device.builder()
                 .name(req.name())
                 .description(req.description())
-                .address(req.address())
                 .maxConsumption(req.maxConsumption())
                 .build();
     }
@@ -26,7 +25,6 @@ public final class DeviceMapper {
     public static void updateEntity(Device device, DeviceRequest req) {
         device.setName(req.name());
         device.setDescription(req.description());
-        device.setAddress(req.address());
         device.setMaxConsumption(req.maxConsumption());
     }
 }

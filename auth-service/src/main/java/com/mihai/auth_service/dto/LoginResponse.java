@@ -4,4 +4,4 @@ import com.mihai.auth_service.entity.Role;
 
 import java.util.UUID;
 
-public record LoginResponse(UUID userId, String username, Role role) {}
+public record LoginResponse(String token, UUID userId, String username, Role role) {}

@@ -1,5 +1,6 @@
 package com.mihai.user_service.service;
 
+import com.mihai.user_service.client.AuthClient;
 import com.mihai.user_service.client.DeviceClient;
 import com.mihai.user_service.dto.UserRequest;
 import com.mihai.user_service.dto.UserResponse;
@@ -21,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final DeviceClient deviceClient;
+    private final AuthClient authClient;
 
     public List<UserResponse> findAll() {
         return userRepository.findAll().stream().map(UserMapper::toResponse).toList();
@@ -45,8 +47,8 @@ public class UserService {
     @Transactional
     public UserResponse update(UUID id, UserRequest req) {
         User user = getOrThrow(id);
-        if (!user.getUsername().equals(req.username()) && userRepository.existsByUsername(req.username()))
-            throw new ConflictException("Username already taken");
+        if (!user.getUsername().equals(req.username()))
+            throw new ConflictException("Username cannot be changed");
         if (!user.getEmail().equals(req.email()) && userRepository.existsByEmail(req.email()))
             throw new ConflictException("Email already in use");
 
@@ -57,6 +59,7 @@ public class UserService {
     @Transactional
     public void delete(UUID id) {
         User user = getOrThrow(id);
+        authClient.deleteCredentials(id);
         deviceClient.notifyUserDeleted(id);
         userRepository.delete(user);
     }

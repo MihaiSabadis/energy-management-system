@@ -14,6 +14,16 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=PathPrefix(`/`) && !PathPrefix(`/api`)
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.routers.frontend.priority=1
+      - traefik.http.services.frontend.loadbalancer.server.port=80
+
   auth-service:
     build: ./auth-service
     container_name: auth-service
@@ -22,6 +32,10 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       USER_SERVICE_URL: http://user-service:8081
+      JWT_SECRET: change-this-to-a-long-random-string-at-least-32-chars
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin123
+      ADMIN_EMAIL: admin@ems.local
     ports:
       - "8083:8083"
     depends_on:
@@ -29,9 +43,22 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)
-      - traefik.http.routers.auth.entrypoints=web
       - traefik.http.services.auth.loadbalancer.server.port=8083
+
+      # the middleware: "before forwarding, ask this URL"
+      - traefik.http.middlewares.jwt-auth.forwardauth.address=http://auth-service:8083/api/auth/validate
+      - traefik.http.middlewares.jwt-auth.forwardauth.authResponseHeaders=X-User-Id,X-User-Role
+
+      # public: login and register (no token yet)
+      - traefik.http.routers.auth-public.rule=Path(`/api/auth/login`) || Path(`/api/auth/register`)
+      - traefik.http.routers.auth-public.entrypoints=web
+      - traefik.http.routers.auth-public.service=auth
+
+      # protected: admin creates accounts
+      - traefik.http.routers.auth-admin.rule=PathPrefix(`/api/auth/users`)
+      - traefik.http.routers.auth-admin.entrypoints=web
+      - traefik.http.routers.auth-admin.service=auth
+      - traefik.http.routers.auth-admin.middlewares=jwt-auth@docker
 
   user-service:
     build: ./user-service
@@ -41,6 +68,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DEVICE_SERVICE_URL: http://device-service:8082
+      AUTH_SERVICE_URL: http://auth-service:8083
     ports:
       - "8081:8081"
     depends_on:
@@ -50,6 +78,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.users.rule=PathPrefix(`/api/users`)
       - traefik.http.routers.users.entrypoints=web
+      - traefik.http.routers.users.middlewares=jwt-auth@docker
       - traefik.http.services.users.loadbalancer.server.port=8081
 
   device-service:
@@ -68,6 +97,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.devices.rule=PathPrefix(`/api/devices`) && !PathPrefix(`/api/devices/internal`)
       - traefik.http.routers.devices.entrypoints=web
+      - traefik.http.routers.devices.middlewares=jwt-auth@docker
       - traefik.http.services.devices.loadbalancer.server.port=8082
 
   user-db:

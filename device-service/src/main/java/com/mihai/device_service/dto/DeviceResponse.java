@@ -6,7 +6,6 @@ public record DeviceResponse(
         UUID id,
         String name,
         String description,
-        String address,
         Double maxConsumption,
         UUID userId
 ) {}

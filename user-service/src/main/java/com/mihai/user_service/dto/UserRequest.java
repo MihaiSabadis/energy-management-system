@@ -8,5 +8,5 @@ public record UserRequest(
     @NotBlank @Size(max = 50) String username,
     @NotBlank String fullName,
     @NotBlank @Email String email,
-    @NotBlank String address
+    String address
 ) {}
