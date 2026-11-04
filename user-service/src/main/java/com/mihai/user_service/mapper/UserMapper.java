@@ -6,7 +6,7 @@ import com.mihai.user_service.entity.User;
 
 public final class UserMapper {
 
-    private UserMapper() {}   // utility class, no instances
+    private UserMapper() {}
 
     public static UserResponse toResponse(User user) {
         return new UserResponse(user.getId(), user.getUsername(), user.getFullName(),

@@ -48,22 +48,6 @@ public class AuthService {
         return toLoginResponse(cred);
     }
 
-    public ValidateResponse validate(String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new UnauthorizedException("Missing or malformed Authorization header");
-
-        String token = authHeader.substring("Bearer ".length());
-        try {
-            io.jsonwebtoken.Claims claims = jwtUtil.parse(token);
-            return new ValidateResponse(
-                    UUID.fromString(claims.getSubject()),
-                    claims.get("username", String.class),
-                    Role.valueOf(claims.get("role", String.class)));
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new UnauthorizedException("Invalid or expired token");
-        }
-    }
-
     private LoginResponse toLoginResponse(Credential cred) {
         return new LoginResponse(jwtUtil.generateToken(cred),
                 cred.getId(), cred.getUsername(), cred.getRole());
@@ -100,7 +84,7 @@ public class AuthService {
             throw new UnauthorizedException("Invalid or expired token");
         }
 
-        // called directly (e.g. from Swagger): only check the token
+        // called directly (from Swagger): only check the token
         if (method == null && uri == null) return identity;
 
         if (!accessPolicy.isAllowed(identity.role(), identity.userId(), method, uri))

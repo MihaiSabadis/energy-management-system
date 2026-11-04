@@ -69,5 +69,6 @@ Created automatically on first start:
 ├── user-service/        Spring Boot user management service
 ├── device-service/      Spring Boot device management service
 ├── frontend/            React application
+├── db_dumps/            sql dumps of each database
 └── docker-compose.yml   Deployment of all services, databases and Traefik
 ```
