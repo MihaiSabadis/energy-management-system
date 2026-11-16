@@ -8,6 +8,7 @@ import com.mihai.user_service.entity.User;
 import com.mihai.user_service.exception.ConflictException;
 import com.mihai.user_service.exception.NotFoundException;
 import com.mihai.user_service.mapper.UserMapper;
+import com.mihai.user_service.messaging.UserEventPublisher;
 import com.mihai.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final DeviceClient deviceClient;
     private final AuthClient authClient;
+
+    private final UserEventPublisher userEventPublisher;
 
     public List<UserResponse> findAll() {
         return userRepository.findAll().stream().map(UserMapper::toResponse).toList();
@@ -40,7 +43,8 @@ public class UserService {
             throw new ConflictException("Email already in use");
 
         User saved = userRepository.save(UserMapper.toEntity(req));
-        deviceClient.notifyUserCreated(saved.getId());
+        //deviceClient.notifyUserCreated(saved.getId());
+        userEventPublisher.userCreated(saved.getId(), saved.getUsername());
         return UserMapper.toResponse(saved);
     }
 

@@ -15,13 +15,6 @@ public class DeviceClient {
         this.restClient = RestClient.create(baseUrl);
     }
 
-    public void notifyUserCreated(UUID userId) {
-        restClient.post()
-                .uri("/api/devices/internal/users/{userId}", userId)
-                .retrieve()
-                .toBodilessEntity();
-    }
-
     public void notifyUserDeleted(UUID userId) {
         restClient.delete()
                 .uri("/api/devices/internal/users/{userId}", userId)
