@@ -70,18 +70,4 @@ public class DeviceController {
     public DeviceResponse unassign(@PathVariable UUID id) {
         return deviceService.unassign(id);
     }
-
-    @PostMapping("/internal/users/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Internal: register a user created in user-service")
-    public void userCreated(@PathVariable UUID userId) {
-        deviceService.syncUserCreated(userId);
-    }
-
-    @DeleteMapping("/internal/users/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Internal: remove a deleted user and unassign their devices")
-    public void userDeleted(@PathVariable UUID userId) {
-        deviceService.syncUserDeleted(userId);
-    }
 }

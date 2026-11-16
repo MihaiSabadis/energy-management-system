@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -61,10 +59,4 @@ public class AuthController {
                 .body(v);
     }
 
-    @DeleteMapping("/internal/users/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Internal: delete the credentials of a deleted user")
-    public void deleteCredentials(@PathVariable UUID userId) {
-        authService.deleteCredentials(userId);
-    }
 }

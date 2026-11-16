@@ -1,7 +1,5 @@
 package com.mihai.user_service.service;
 
-import com.mihai.user_service.client.AuthClient;
-import com.mihai.user_service.client.DeviceClient;
 import com.mihai.user_service.dto.UserRequest;
 import com.mihai.user_service.dto.UserResponse;
 import com.mihai.user_service.entity.User;
@@ -22,8 +20,6 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final DeviceClient deviceClient;
-    private final AuthClient authClient;
 
     private final UserEventPublisher userEventPublisher;
 
@@ -63,9 +59,8 @@ public class UserService {
     @Transactional
     public void delete(UUID id) {
         User user = getOrThrow(id);
-        authClient.deleteCredentials(id);
-        deviceClient.notifyUserDeleted(id);
         userRepository.delete(user);
+        userEventPublisher.userDeleted(user.getId(), user.getUsername());
     }
 
     private User getOrThrow(UUID id) {

@@ -53,10 +53,13 @@ services:
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: admin123
       ADMIN_EMAIL: admin@ems.local
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "8083:8083"
     depends_on:
       auth-db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     labels:
       - traefik.enable=true
@@ -84,8 +87,6 @@ services:
       DB_URL: jdbc:postgresql://user-db:5432/user_db
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DEVICE_SERVICE_URL: http://device-service:8082
-      AUTH_SERVICE_URL: http://auth-service:8083
       RABBITMQ_HOST: rabbitmq
     ports:
       - "8081:8081"

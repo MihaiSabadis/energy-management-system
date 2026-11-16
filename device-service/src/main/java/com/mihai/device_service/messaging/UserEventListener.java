@@ -18,10 +18,10 @@ public class UserEventListener {
     public void onUserEvent(UserEvent event) {
         log.info("Received sync event: {}", event);
 
-        if (event.type().equals(UserEvent.CREATED)) {
-            deviceService.syncUserCreated(event.userId());
-        } else {
-            log.info("Ignoring event type {}", event.type());
+        switch (event.type()) {
+            case UserEvent.CREATED -> deviceService.syncUserCreated(event.userId());
+            case UserEvent.DELETED -> deviceService.syncUserDeleted(event.userId());
+            default -> log.info("Ignoring event type {}", event.type());
         }
     }
 }
