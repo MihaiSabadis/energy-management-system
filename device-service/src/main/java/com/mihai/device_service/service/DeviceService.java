@@ -6,6 +6,7 @@ import com.mihai.device_service.entity.Device;
 import com.mihai.device_service.entity.UserRef;
 import com.mihai.device_service.exception.NotFoundException;
 import com.mihai.device_service.mapper.DeviceMapper;
+import com.mihai.device_service.messaging.DeviceEventPublisher;
 import com.mihai.device_service.repository.DeviceRepository;
 import com.mihai.device_service.repository.UserRefRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class DeviceService {
 
     private final DeviceRepository deviceRepository;
     private final UserRefRepository userRefRepository;
+    private final DeviceEventPublisher deviceEventPublisher;
 
     public List<DeviceResponse> findAll() {
         return deviceRepository.findAll().stream().map(DeviceMapper::toResponse).toList();
@@ -36,19 +38,25 @@ public class DeviceService {
 
     @Transactional
     public DeviceResponse create(DeviceRequest req) {
-        return DeviceMapper.toResponse(deviceRepository.save(DeviceMapper.toEntity(req)));
+
+        Device saved = deviceRepository.save(DeviceMapper.toEntity(req));
+        deviceEventPublisher.deviceCreated(saved);
+        return DeviceMapper.toResponse(saved);
     }
 
     @Transactional
     public DeviceResponse update(UUID id, DeviceRequest req) {
         Device device = getOrThrow(id);
         DeviceMapper.updateEntity(device, req);
+        deviceEventPublisher.deviceUpdated(device);
         return DeviceMapper.toResponse(device);
     }
 
     @Transactional
     public void delete(UUID id) {
-        deviceRepository.delete(getOrThrow(id));
+        Device device = getOrThrow(id);
+        deviceRepository.delete(device);
+        deviceEventPublisher.deviceDeleted(device);
     }
 
     @Transactional
@@ -57,6 +65,7 @@ public class DeviceService {
         UserRef user = userRefRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
         device.setUser(user);
+        deviceEventPublisher.deviceUpdated(device);
         return DeviceMapper.toResponse(device);
     }
 
@@ -64,6 +73,7 @@ public class DeviceService {
     public DeviceResponse unassign(UUID deviceId) {
         Device device = getOrThrow(deviceId);
         device.setUser(null);
+        deviceEventPublisher.deviceUpdated(device);
         return DeviceMapper.toResponse(device);
     }
 
@@ -76,7 +86,10 @@ public class DeviceService {
 
     @Transactional
     public void syncUserDeleted(UUID userId) {
-        deviceRepository.findByUserId(userId).forEach(d -> d.setUser(null));
+        deviceRepository.findByUserId(userId).forEach(d -> {
+                d.setUser(null);
+                deviceEventPublisher.deviceUpdated(d);
+        });
         userRefRepository.deleteById(userId);
     }
 
