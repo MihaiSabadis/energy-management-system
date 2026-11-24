@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Vq8nwP4TWz6jmZ9uLieDP1Sd2rrYdCo1q5iwxbXRtDUE8siT4JJJPZRRJrBIh1I
+\restrict exctGHv048RaCxGyx7pgUa2XmRq7h90p9j6DMWcS585GTbYyxrY3mDO5juImM2b
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg13+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg13+2)
@@ -58,10 +58,11 @@ ALTER TABLE public.users OWNER TO postgres;
 --
 
 COPY public.devices (id, description, max_consumption, name, user_id) FROM stdin;
-caf9197f-be05-48da-9cb6-43dfb1abe899	Warms the room	1.5	Radiator	093ad13a-0ccb-4b49-9384-665bdb18acc2
-464df2ec-c377-4157-bce6-64bd8b672e14	sprays water	0.7	Umidifier	9f866694-cf89-474a-802c-de0592d3b556
-a4a949e3-0307-4a7e-8c1e-784e35b9710f	for the garden	0.9	Water Sprinkler	\N
-ae13a302-b611-48b6-8b8d-798f327897a5	corridor light	0.6	Hall Lamp	9f866694-cf89-474a-802c-de0592d3b556
+6d9b03c5-7c21-4add-a786-db2ab0f7ec44	umidifies the room a little	0.4	Umidifier	\N
+e4694883-0ce2-4d14-9bad-ba0322840502	regulate the termperature	0.1	Thermostat	8ddae243-9419-4486-99e7-ab27a4fdb502
+df6d5137-1b33-46da-acd2-d0d24b489255	lights the room in nice way	0.2	Lava Lamp	7e41470e-94f5-49ae-a26e-1c7091fe1ac1
+23b2dd72-2fa1-4091-98e4-60bd1c72980b	warms the feet	1.1	Heater	b95b52a4-34ee-48f5-9461-e0c78b9f3534
+cf34a99f-031d-4a7f-9448-8dd8c7ec2f56	odorizes the room in an evil way	1.5	Odorize-inator	b95b52a4-34ee-48f5-9461-e0c78b9f3534
 \.
 
 
@@ -70,11 +71,12 @@ ae13a302-b611-48b6-8b8d-798f327897a5	corridor light	0.6	Hall Lamp	9f866694-cf89-
 --
 
 COPY public.users (id) FROM stdin;
-cd0b02a8-ef0b-4df3-aea6-606ee2de1dbc
-093ad13a-0ccb-4b49-9384-665bdb18acc2
-9f866694-cf89-474a-802c-de0592d3b556
-23f40ce7-9f50-407b-9814-d0f3012c7200
-ea324acf-7f41-4220-84ad-722d7846a176
+5b178cf7-c4d8-4843-a37c-7b10f5bf8ccd
+26277768-d78b-49bf-8af5-9d92a89a68d6
+7e41470e-94f5-49ae-a26e-1c7091fe1ac1
+8ddae243-9419-4486-99e7-ab27a4fdb502
+da36220b-3e03-4b9a-bf27-9da832505bd2
+b95b52a4-34ee-48f5-9461-e0c78b9f3534
 \.
 
 
@@ -106,5 +108,5 @@ ALTER TABLE ONLY public.devices
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Vq8nwP4TWz6jmZ9uLieDP1Sd2rrYdCo1q5iwxbXRtDUE8siT4JJJPZRRJrBIh1I
+\unrestrict exctGHv048RaCxGyx7pgUa2XmRq7h90p9j6DMWcS585GTbYyxrY3mDO5juImM2b
 

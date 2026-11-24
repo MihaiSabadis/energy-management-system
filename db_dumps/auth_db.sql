@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict NHxN6ap1NMxnqb2omHffoDiPEN5MybehyltDCUTEFcH5uodFJZargLGKaeArQ92
+\restrict OF46Nctx1WTUoHZ7pWss9KGoGKk1upMJPSgfQeFlZ4fzPkwa3tKx8ZZWkvacOLz
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg13+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg13+2)
@@ -45,11 +45,12 @@ ALTER TABLE public.credentials OWNER TO postgres;
 --
 
 COPY public.credentials (id, password_hash, role, username) FROM stdin;
-cd0b02a8-ef0b-4df3-aea6-606ee2de1dbc	$2a$10$w9G8RpyQ4JHUdTzjBa6BzOdzVEAUEN9GhbMnbjvNWvGAhyCe44JH2	ADMIN	admin
-093ad13a-0ccb-4b49-9384-665bdb18acc2	$2a$10$rHEMIYox3EUq1Rn7MwNi9uCxxzOabAzSLEUHXvhL8qo0aQB8.ZnVK	CLIENT	mihai
-9f866694-cf89-474a-802c-de0592d3b556	$2a$10$06rJS0JpbrXGvqPHeCQcG.APTw4HjIBtgc4.2nKPzBU97neNrGYPq	CLIENT	sue
-23f40ce7-9f50-407b-9814-d0f3012c7200	$2a$10$TLiQpm81VtlClvey/ls5gu9RMdqOjglDfM8T0UPOjKkWS1zUzpeHW	ADMIN	admin1
-ea324acf-7f41-4220-84ad-722d7846a176	$2a$10$/KRVP.HG5I9B/qqQjPlIFuhTOz26U8qXXrcnxp.Rj0fhFWZVwlA7G	CLIENT	flori
+5b178cf7-c4d8-4843-a37c-7b10f5bf8ccd	$2a$10$b7gYs1/yZQAB19Ykp1P.1.G4wSaEB.LH3o92SUZsCFnKA4efltVni	ADMIN	admin
+26277768-d78b-49bf-8af5-9d92a89a68d6	$2a$10$iTz.2cO0jSnedADrEzR8euJiXEIv9U/wZQeYxJpB2iM0k/qxPHyB.	CLIENT	mihai
+7e41470e-94f5-49ae-a26e-1c7091fe1ac1	$2a$10$DDwtjzGk9bc7K7DBgyl40uZWByUFqe02GQ1.bjxha5.pNbNmlgC4K	CLIENT	randy
+8ddae243-9419-4486-99e7-ab27a4fdb502	$2a$10$mdxJluvyYo/ZFzbPpkP3O..4u6RrvkcJ6pmLPKXhliYMh5dzavwgm	CLIENT	stefy
+da36220b-3e03-4b9a-bf27-9da832505bd2	$2a$10$z8JbhiY.zlxxzpEIU405x.d9H3oCNrX/isvxIH2F6S20keVf2NmXa	ADMIN	new_admin
+b95b52a4-34ee-48f5-9461-e0c78b9f3534	$2a$10$dQ5vX5aab3Qi7wMp.OJSzejaTKqlLYtHBH3NG7rci1y8TF4hPbzNm	CLIENT	bogo
 \.
 
 
@@ -73,5 +74,5 @@ ALTER TABLE ONLY public.credentials
 -- PostgreSQL database dump complete
 --
 
-\unrestrict NHxN6ap1NMxnqb2omHffoDiPEN5MybehyltDCUTEFcH5uodFJZargLGKaeArQ92
+\unrestrict OF46Nctx1WTUoHZ7pWss9KGoGKk1upMJPSgfQeFlZ4fzPkwa3tKx8ZZWkvacOLz
 
