@@ -7,10 +7,14 @@
     "queue": "measurements"
   },
   "devices": [
-    "cfa6b6bc-3668-4c7d-8251-03ebd03ad3d2"
+        "6d9b03c5-7c21-4add-a786-db2ab0f7ec44",
+        "e4694883-0ce2-4d14-9bad-ba0322840502",
+        "df6d5137-1b33-46da-acd2-d0d24b489255",
+        "23b2dd72-2fa1-4091-98e4-60bd1c72980b",
+        "cf34a99f-031d-4a7f-9448-8dd8c7ec2f56"
   ],
   "interval_minutes": 10,
-  "seconds_between_readings": 0,
-  "start": "2026-11-20T00:00:00",
+  "seconds_between_readings": 1,
+  "start": "2026-11-22T00:00:00",
   "duration_hours": 24
 }

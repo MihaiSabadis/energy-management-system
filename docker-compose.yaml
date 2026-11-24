@@ -119,7 +119,7 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.devices.rule=PathPrefix(`/api/devices`) && !PathPrefix(`/api/devices`)
+      - traefik.http.routers.devices.rule=PathPrefix(`/api/devices`)
       - traefik.http.routers.devices.entrypoints=web
       - traefik.http.routers.devices.middlewares=jwt-auth@docker
       - traefik.http.services.devices.loadbalancer.server.port=8082

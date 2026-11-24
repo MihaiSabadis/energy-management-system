@@ -117,6 +117,7 @@ Created automatically on first start:
 ├── simulator/                 Python device data simulator
 ├── frontend/                  React application
 ├── db_dumps/                  SQL dumps of each database
-├── deployment-diagram.drawio  UML deployment diagram
+├── deployment-diagram-a1.drawio  UML deployment diagram from 1st assignment
+├── deployment-diagram-a2.drawio  UML deployment diagram from 2nd assignment
 └── docker-compose.yaml        Deployment of all services, databases, RabbitMQ and Traefik
 ```
