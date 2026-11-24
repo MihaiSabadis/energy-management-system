@@ -119,7 +119,7 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.devices.rule=PathPrefix(`/api/devices`) && !PathPrefix(`/api/devices/internal`)
+      - traefik.http.routers.devices.rule=PathPrefix(`/api/devices`) && !PathPrefix(`/api/devices`)
       - traefik.http.routers.devices.entrypoints=web
       - traefik.http.routers.devices.middlewares=jwt-auth@docker
       - traefik.http.services.devices.loadbalancer.server.port=8082
@@ -139,6 +139,12 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.monitoring.rule=PathPrefix(`/api/monitoring`)
+      - traefik.http.routers.monitoring.entrypoints=web
+      - traefik.http.routers.monitoring.middlewares=jwt-auth@docker
+      - traefik.http.services.monitoring.loadbalancer.server.port=8084
 
   user-db:
     image: postgres:16

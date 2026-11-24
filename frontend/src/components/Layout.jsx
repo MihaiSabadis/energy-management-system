@@ -9,7 +9,7 @@ export default function Layout() {
 
     const links = auth.role === 'ADMIN'
         ? [{ to: '/admin/users', label: 'Users' }, { to: '/admin/devices', label: 'Devices' }]
-        : [{ to: '/my-devices', label: 'My devices' }]
+        : [{ to: '/my-devices', label: 'My devices' }, {to:'/my-consumption', label: 'My consumption'}]
 
     function handleLogout() {
         logout()

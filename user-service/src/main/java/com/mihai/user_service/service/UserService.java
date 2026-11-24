@@ -39,7 +39,6 @@ public class UserService {
             throw new ConflictException("Email already in use");
 
         User saved = userRepository.save(UserMapper.toEntity(req));
-        //deviceClient.notifyUserCreated(saved.getId());
         userEventPublisher.userCreated(saved.getId(), saved.getUsername());
         return UserMapper.toResponse(saved);
     }

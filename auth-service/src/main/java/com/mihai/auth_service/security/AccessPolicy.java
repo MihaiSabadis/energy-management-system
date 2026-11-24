@@ -17,6 +17,7 @@ public class AccessPolicy {
         String path = uri.split("\\?")[0];          // ignore query string
 
         return path.equals("/api/users/" + userId)
-                || path.equals("/api/devices/user/" + userId);
+                || path.equals("/api/devices/user/" + userId)
+                || path.equals("/api/monitoring/users/" + userId + "/consumption");
     }
 }

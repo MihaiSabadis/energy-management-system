@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import AdminDevicesPage from './pages/admin/AdminDevicesPage'
 import MyDevicesPage from './pages/client/MyDevicesPage'
+import MyConsumptionPage from "./pages/client/MyConsumptionPage.jsx";
 
 export default function App() {
   return (
@@ -20,6 +21,8 @@ export default function App() {
                  element={<ProtectedRoute role="ADMIN"><AdminDevicesPage /></ProtectedRoute>} />
           <Route path="/my-devices"
                  element={<ProtectedRoute role="CLIENT"><MyDevicesPage /></ProtectedRoute>} />
+          <Route path="/my-consumption"
+                 element={<ProtectedRoute role="CLIENT"><MyConsumptionPage /></ProtectedRoute>} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

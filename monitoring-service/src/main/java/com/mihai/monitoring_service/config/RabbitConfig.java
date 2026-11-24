@@ -14,6 +14,12 @@ public class RabbitConfig {
 
     public static final String SYNC_EXCHANGE = "sync.exchange";
     public static final String SYNC_QUEUE = "monitoring.sync";
+    public static final String MEASUREMENTS_QUEUE = "measurements";
+
+    @Bean
+    public Queue measurementsQueue() {
+        return new Queue(MEASUREMENTS_QUEUE, true);
+    }
 
     @Bean
     public TopicExchange syncExchange() {

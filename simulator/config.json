@@ -1,0 +1,16 @@
+{
+  "rabbitmq": {
+    "host": "localhost",
+    "port": 5672,
+    "username": "guest",
+    "password": "guest",
+    "queue": "measurements"
+  },
+  "devices": [
+    "cfa6b6bc-3668-4c7d-8251-03ebd03ad3d2"
+  ],
+  "interval_minutes": 10,
+  "seconds_between_readings": 0,
+  "start": "2026-11-20T00:00:00",
+  "duration_hours": 24
+}
